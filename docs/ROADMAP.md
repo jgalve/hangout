@@ -52,7 +52,6 @@ Implemented:
 
 Still required before calling Phase 1 production-ready:
 
-- Password-reset user interface.
 - Account deletion through a protected server-side function.
 - User data export.
 - Automated RLS integration tests.

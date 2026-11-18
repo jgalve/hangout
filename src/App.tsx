@@ -1,7 +1,7 @@
 import {useEffect,useState} from 'react'
 import type {Session} from '@supabase/supabase-js'
 import {configured,supabase} from './lib/supabase'
-import {Auth,CompleteSocialSignup} from './components/Auth'
+import {Auth,CompleteSocialSignup,PasswordRecovery} from './components/Auth'
 import {MarketingHome} from './components/MarketingHome'
 import {ProfileEditor} from './components/ProfileEditor'
 import {Places} from './components/Places'
@@ -27,6 +27,7 @@ const appTabs=[
 export default function App(){
   const [session,setSession]=useState<Session|null>(null)
   const [ready,setReady]=useState(false)
+  const [passwordRecovery,setPasswordRecovery]=useState(false)
   const [authMode,setAuthMode]=useState<'signup'|'login'|null>(getAuthModeFromLocation)
   const [tab,setTab]=useState<'discover'|'matches'|'meetups'|'profile'>('discover')
   const [refresh,setRefresh]=useState(0)
@@ -56,12 +57,15 @@ export default function App(){
   useEffect(()=>{
     if(!supabase){setReady(true);return}
     supabase.auth.getSession().then(({data})=>{setSession(data.session);setReady(true)})
-    const {data}=supabase.auth.onAuthStateChange((_e,s)=>setSession(s))
+    const {data}=supabase.auth.onAuthStateChange((event,s)=>{
+      setSession(s)
+      if(event==='PASSWORD_RECOVERY')setPasswordRecovery(true)
+    })
     return()=>data.subscription.unsubscribe()
   },[])
 
   useEffect(()=>{
-    if(!session){
+    if(!session||passwordRecovery){
       setAccountAccess('active')
       setAdminRole(null)
       setAdminRoleError('')
@@ -107,10 +111,10 @@ export default function App(){
     }
     void checkAccountAccess()
     return()=>{cancelled=true}
-  },[session?.user.id,accountAccessAttempt])
+  },[session?.user.id,accountAccessAttempt,passwordRecovery])
 
   useEffect(()=>{
-    if(!session||tab!=='discover')return
+    if(!session||passwordRecovery||tab!=='discover')return
     let cancelled=false
     const metadataName=typeof session.user.user_metadata.first_name==='string'
       ?session.user.user_metadata.first_name.trim()
@@ -133,9 +137,16 @@ export default function App(){
       setProfileCheckLoading(false)
     })
     return()=>{cancelled=true}
-  },[session?.user.id,tab,profileCheckAttempt])
+  },[session?.user.id,tab,profileCheckAttempt,passwordRecovery])
 
   if(!ready)return <div className="loading">Loading HangOut…</div>
+  if(passwordRecovery)return <PasswordRecovery onContinue={()=>{
+    const callbackUrl=new URL(window.location.href)
+    callbackUrl.search=''
+    callbackUrl.hash=''
+    window.history.replaceState(window.history.state,'',callbackUrl)
+    setPasswordRecovery(false)
+  }}/>
   if(!session){
     if(!authMode)return <MarketingHome/>
     if(!configured)return <Setup onBack={()=>{location.hash='#home'}}/>

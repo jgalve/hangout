@@ -137,7 +137,6 @@ Implemented:
 
 Still required:
 
-- Password-reset UI
 - Protected account deletion
 - User data export
 - Automated RLS tests
@@ -190,7 +189,7 @@ Workstreams:
 4. Server-validated moderator roles, queue, actions, assignments, and immutable audit logs
 5. Server-side rate limits for sign-up, login, swipes, messages, reports, place search, and photos
 6. Complete photo safety controls: server-side validation/re-encoding, moderation, and review workflow. Basic browser validation, metadata-removal re-encoding, ownership policies, a public bucket, and a size limit are implemented.
-7. Password reset, session revocation, data export, and account deletion
+7. Session revocation, data export, and account deletion
 8. ESLint, Prettier, Vitest, React Testing Library, Playwright, Supabase CLI, pgTAP, GitHub Actions, and Sentry
 
 The initial baseline uses migrations `001` through `006`; current migrations extend through `018`. Continue with new numbers and do not reuse migration filenames:
@@ -371,7 +370,7 @@ The script is idempotent and uses synthetic avatar illustrations rather than rea
 Configure Supabase Auth:
 
 - Set the Site URL to the local or deployed app.
-- Add `http://localhost:5173` and the OAuth return URLs `http://localhost:5173/?authMode=signup` and `http://localhost:5173/?authMode=login` to the redirect URL allowlist. Add the equivalent deployed URLs.
+- Add `http://localhost:5173` and the return URLs `http://localhost:5173/?authMode=signup` and `http://localhost:5173/?authMode=login` to the redirect URL allowlist. Password reset uses the login return URL. Add the equivalent deployed URLs.
 - Keep email confirmation enabled for realistic tests.
 - Never place a service-role key, database password, or secret provider credential in `VITE_*` variables.
 

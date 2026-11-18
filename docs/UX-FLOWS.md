@@ -11,6 +11,11 @@ Document entry points, steps, decision states, validation, error/empty/loading/s
 - A social account without a first name or recorded 18+ confirmation must complete account setup before accessing the app. Existing email/password registration and login remain available.
 - Show provider cancellation/configuration errors on the auth screen. Do not silently link accounts by matching email addresses in app code.
 
+### Reset a forgotten password
+- From Log in, choose **Forgot your password?**, enter an email address, and request a reset link. Always use the same confirmation whether or not an account exists for the address.
+- Supabase sends the reset email and returns the user to the configured HangOut login URL. A valid recovery session shows a form to enter and confirm a new password of at least eight characters.
+- Show loading, validation, expired-link, and update errors accessibly. After a successful update, let the user continue into HangOut. Never log or expose password values.
+
 ### Set gender identity and discovery preferences
 - Gender identity is optional. Users may choose Woman, Man, Non-binary, Self-described, or Prefer not to say. Self-described identity requires a short description (up to 50 characters).
 - Interested-in preferences are separate from identity. Users may select one or more categories, or keep the default Open to everyone.
