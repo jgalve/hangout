@@ -3,6 +3,7 @@ import {supabase} from '../lib/supabase'
 import {pinProfilePlace} from '../lib/profilePlaces'
 import {getPersonalityLabels,ProfileDialog} from './ProfileDialog'
 import {FeaturedHangoutCard} from './FeaturedHangoutCard'
+import {DiscoveryShare} from './DiscoveryShare'
 import type {FeaturedHangout} from './FeaturedHangoutCard'
 import type {FeaturedPinState} from './FeaturedHangoutCard'
 import type {ViewableProfile} from './ProfileDialog'
@@ -116,7 +117,7 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
   }
 
   async function pinFeaturedHangout(){
-    if(!featuredHangout)return
+    if(!featuredHangout?.place_id)return
     await pinHangoutPlace(featuredHangout.place_id,featuredHangout.venue_name)
   }
 
@@ -156,14 +157,13 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
 
   useEffect(()=>{void load();void loadRankings();void loadPinnedPlaces();void loadFeaturedHangout()},[userId])
 
-  const featuredAlreadyPinned=Boolean(featuredHangout&&pinnedPlaces.some(place=>place.place_id===featuredHangout.place_id))
-  const featuredPinState:FeaturedPinState|undefined=featuredHangout
-    ?featuredAlreadyPinned?'pinned'
+  const featuredPinState:FeaturedPinState|undefined=featuredHangout?.place_id
+    ?pinnedPlaces.some(place=>place.place_id===featuredHangout.place_id)?'pinned'
       :pinningPlaceId===featuredHangout.place_id?'pinning'
         :pinningPlaceId?'busy'
-        :pinnedPlacesLoading?'checking'
-          :pinnedPlacesError||!featuredHangout.place_id?'unavailable'
-            :pinnedPlaces.length>=5?'limit':'available'
+          :pinnedPlacesLoading?'checking'
+            :pinnedPlacesError?'unavailable'
+              :pinnedPlaces.length>=5?'limit':'available'
     :undefined
 
   async function swipe(person:Candidate,choice:'like'|'pass'){
@@ -246,6 +246,7 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
     </div>:<p>No discoverable people in this list share this place. Choose another place or select “All places.”</p>:<p>{msg||'Loading candidates…'}</p>}
     <button className="link" onClick={()=>{void load();void loadRankings();void loadPinnedPlaces();void loadFeaturedHangout()}}>Refresh candidates</button>
     <p className="status">{msg}</p>
+    <DiscoveryShare/>
     {selected&&<ProfileDialog person={selected} onClose={()=>setSelected(null)}/>}
   </section>
 }

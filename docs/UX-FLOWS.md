@@ -53,6 +53,7 @@ Document entry points, steps, decision states, validation, error/empty/loading/s
 - Show loading, empty, and error states for the rankings and the user's existing pins.
 - Place the single published featured hangout between Popular and Trending. Show its configured venue, pair-focused promo copy, optional photo, terms, and optional HTTPS call-to-action. Use a labeled photo placeholder when no image is configured.
 - The featured card links to its selected OpenStreetMap place and lets the signed-in user pin that same place. Show already-pinned, pinning, five-place-limit, and error states; keep the map link and pin target tied to one catalog record.
+- At the bottom of Discover, invite friends using only the public marketing homepage (`/`), never profile details or signed-in Discover content. Offer the device share sheet when supported, copy link, WhatsApp, Facebook, X, and email; Messenger may be selected from the device share sheet when available. Announce copy success and errors, and treat share-sheet cancellation as a normal dismissal.
 - The featured section reads only published content for an active signed-in user. An unpublished draft is available only through the admin workspace.
 - The initial Solaire Pasay promo is sample content, prominently labeled as not a real offer, not redeemable, and not affiliated with the venue. Keep the sample-only marker until actual offer details are confirmed.
 

@@ -1,9 +1,9 @@
 import {useEffect,useState} from 'react'
 
 export type FeaturedHangout={
-  place_id:string
-  osm_type:string
-  osm_id:string
+  place_id:string|null
+  osm_type:string|null
+  osm_id:string|null
   venue_name:string
   promo_title:string
   promo_description:string
@@ -18,8 +18,8 @@ export type FeaturedHangout={
 
 export type FeaturedPinState='checking'|'unavailable'|'limit'|'pinning'|'busy'|'pinned'|'available'
 
-export function getOpenStreetMapUrl(osmType:string,osmId:string){
-  if(!['node','way','relation'].includes(osmType)||!/^\d+$/.test(osmId))return null
+export function getOpenStreetMapUrl(osmType:string|null,osmId:string|null){
+  if(!osmType||!osmId||!['node','way','relation'].includes(osmType)||!/^\d+$/.test(osmId))return null
   return `https://www.openstreetmap.org/${osmType}/${osmId}`
 }
 

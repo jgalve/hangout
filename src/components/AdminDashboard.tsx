@@ -61,9 +61,9 @@ type VerificationRequest={
 
 const pageSize=25
 const emptyFeaturedHangout:FeaturedHangout={
-  place_id:'',
-  osm_type:'',
-  osm_id:'',
+  place_id:null,
+  osm_type:null,
+  osm_id:null,
   venue_name:'',
   promo_title:'',
   promo_description:'',
@@ -582,7 +582,7 @@ export function AdminDashboard({role}:{role:AdminRole}){
                 setFeaturedPlaceError('')
                 if(value!==selectedFeaturedPlace?.name){
                   setSelectedFeaturedPlace(null)
-                  setFeaturedDraft(current=>({...current,place_id:'',osm_type:'',osm_id:''}))
+                  setFeaturedDraft(current=>({...current,place_id:null,osm_type:null,osm_id:null}))
                 }
               }}
               onKeyDown={event=>{

@@ -621,18 +621,6 @@ export function ProfileEditor({user}:{user:User}){
           :'Enter a valid birth date to see your age and zodiac sign.'}
       </p>}
       <label>Short bio<textarea name="bio" value={bio} onChange={e=>setBio(e.target.value)} maxLength={280} placeholder="Coffee walks, live music, weekend markets…"/></label>
-      <fieldset className="interest-options social-profile-fields">
-        <legend>Social profiles <span className="fine">Optional · visible only to your matches</span></legend>
-        <label>Facebook
-          <input type="url" name="facebook_url" value={facebookUrl} onChange={event=>setFacebookUrl(event.target.value)} maxLength={2048} placeholder="https://www.facebook.com/your-profile" disabled={busy}/>
-        </label>
-        <label>Instagram
-          <input type="url" name="instagram_url" value={instagramUrl} onChange={event=>setInstagramUrl(event.target.value)} maxLength={2048} placeholder="https://www.instagram.com/your-profile" disabled={busy}/>
-        </label>
-        <label>TikTok
-          <input type="url" name="tiktok_url" value={tiktokUrl} onChange={event=>setTiktokUrl(event.target.value)} maxLength={2048} placeholder="https://www.tiktok.com/@your-profile" disabled={busy}/>
-        </label>
-      </fieldset>
       <label>Primary dating intention
         <select name="dating_intention" value={datingIntention} onChange={e=>{
           if(isDatingIntention(e.target.value))setDatingIntention(e.target.value)
@@ -711,6 +699,18 @@ export function ProfileEditor({user}:{user:User}){
           />
         </label>
         <p className="fine">Enter up to 3 unique one-word options, separated by commas. Each can be up to 30 characters and adds to your 3–5 choices.</p>
+      </fieldset>
+      <fieldset className="interest-options social-profile-fields">
+        <legend>Social profiles <span className="fine">Optional · visible only to your matches</span></legend>
+        <label>Facebook
+          <input type="url" name="facebook_url" value={facebookUrl} onChange={event=>setFacebookUrl(event.target.value)} maxLength={2048} placeholder="https://www.facebook.com/your-profile" disabled={busy}/>
+        </label>
+        <label>Instagram
+          <input type="url" name="instagram_url" value={instagramUrl} onChange={event=>setInstagramUrl(event.target.value)} maxLength={2048} placeholder="https://www.instagram.com/your-profile" disabled={busy}/>
+        </label>
+        <label>TikTok
+          <input type="url" name="tiktok_url" value={tiktokUrl} onChange={event=>setTiktokUrl(event.target.value)} maxLength={2048} placeholder="https://www.tiktok.com/@your-profile" disabled={busy}/>
+        </label>
       </fieldset>
       <button className="primary" disabled={busy||!p?.photo_url}>Save profile</button>
       <p className="status" aria-live="polite">{msg}</p>

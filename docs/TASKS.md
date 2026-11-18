@@ -106,9 +106,23 @@ Use this lightweight template per feature.
   - [x] Featured pin controls show already-pinned, pinning, five-place-limit, and error states.
   - [x] Draft content is hidden from Discover, and database functions enforce admin-only configuration access.
   - [ ] Run featured-hangout pgTAP authorization, place association, and publish-state tests against local Supabase.
-- Files: `src/components/Discovery.tsx`, `src/components/AdminDashboard.tsx`, `src/components/FeaturedHangoutCard.tsx`, `src/styles.css`, `supabase/migrations/023_featured_hangout.sql`, `supabase/tests/database/featured_hangout.test.sql`, `docs/UX-FLOWS.md`
-- Developer notes: The initial promo is explicitly demo-only. No real discount, package, venue benefit, or partnership is claimed.
-- QA results: `npm run build` and `git diff --check` passed; the build retains Vite's existing large-chunk warning. The local public page returned HTTP 200, but authenticated Discover/admin states were not visually verified. `npm run test:db` was not run per user request; its 20 pgTAP assertions remain unexecuted, and migration 023 remains unapplied.
+- Files: `src/components/Discovery.tsx`, `src/components/AdminDashboard.tsx`, `src/components/FeaturedHangoutCard.tsx`, `src/styles.css`, `supabase/migrations/023_featured_hangout.sql`, `supabase/migrations/024_featured_hangout_place_link.sql`, `supabase/tests/database/featured_hangout.test.sql`, `docs/UX-FLOWS.md`
+- Developer notes: The initial promo is explicitly demo-only. No real discount, package, venue benefit, or partnership is claimed. Migration 023 was applied by the user with the original nine-argument save function; migration 024 upgrades it to the place-linked function without editing the applied migration.
+- QA results: `npm run build` and `git diff --check` passed; the build retains Vite's existing large-chunk warning. The local public page returned HTTP 200, but authenticated Discover/admin states were not visually verified. Migration 024 and the 20 pgTAP assertions have not been applied/run.
+
+## Feature: Discover invite sharing
+- Status: In QA
+- Goal: Let signed-in users share HangOut's public marketing homepage from the bottom of Discover.
+- Acceptance criteria:
+  - [x] Share only the public `/` destination, without profile data or signed-in Discover content.
+  - [x] Offer the device share sheet when supported, copy link, WhatsApp, Facebook, X, and email.
+  - [x] Show accessible copy success/error and share-sheet error states; do not treat cancellation as an error.
+  - [x] Use responsive, keyboard-accessible controls with at least 44px touch targets.
+  - [x] Defer a direct Messenger button; Messenger may be available from the device share sheet.
+  - [ ] Verify rendered behavior at narrow mobile, tablet, and desktop widths.
+- Files: `src/components/Discovery.tsx`, `src/components/DiscoveryShare.tsx`, `src/styles.css`, `docs/UX-FLOWS.md`
+- Developer notes: Share URLs are static public destinations; no backend changes or new dependencies are required.
+- QA results: `npm run build` and `git diff --check` passed. The authenticated Discover panel and its responsive layout were not visually verified because no signed-in test session was available.
 
 ## Completed features
 

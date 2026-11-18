@@ -325,6 +325,13 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
 }
 .discover-filter-chevron { position: absolute; right: .55rem; width: 14px; height: 14px; color: var(--color-muted); pointer-events: none; }
 .discover-highlights { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; margin-bottom: 1.25rem; }
+.discover-share { display: grid; gap: .75rem; margin-top: 1.25rem; padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-alt); }
+.discover-share-intro h3 { margin: 0; font-size: 1.1rem; }
+.discover-share-intro p { margin: .35rem 0 0; color: var(--color-muted); font-size: .9rem; }
+.discover-share-intro .fine { font-size: .8rem; }
+.discover-share-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
+.discover-share-actions > .primary, .discover-share-actions > .secondary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: .55rem .85rem; text-align: center; text-decoration: none; }
+.discover-share-actions > :focus-visible { outline: 2px solid var(--color-secondary-strong); outline-offset: 2px; }
 .hangout-rankings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
 .hangout-ranking { min-width: 0; padding: .85rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-alt); }
 .hangout-ranking-heading h3 { margin: 0; font-size: 1.05rem; }
@@ -460,7 +467,7 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
 .candidate-profile-hint { margin-top: .55rem; color: var(--color-primary-dark); font-size: .9rem; font-weight: 700; text-decoration: underline; }
 .candidate-gallery { display: flex; justify-content: center; flex-wrap: wrap; gap: .4rem; margin: .6rem 0 0; }
 .candidate .candidate-gallery img { width: 88px; height: 88px; border-radius: 12px; }
-.interest-options { border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 1rem; }
+.interest-options { border: 1px solid var(--color-border); border-radius: var(--radius-sm); padding: 1rem; margin-top: 10px;}
 .interest-options legend { padding: 0 .4rem; font-weight: 700; }
 .gender-options > label { margin: .5rem 0; }
 .interest-list { display: flex; flex-wrap: wrap; gap: .4rem 1rem; }
@@ -785,6 +792,9 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
   .discover-heading p { max-width: 12rem; font-size: .78rem; }
   .discover-filter { flex-basis: clamp(8.5rem, 42vw, 10rem); }
   .discover-highlights { gap: .6rem; margin-bottom: 1rem; }
+  .discover-share { gap: .6rem; margin-top: 1rem; padding: .75rem; }
+  .discover-share-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; }
+  .discover-share-actions > .primary, .discover-share-actions > .secondary { min-width: 0; padding: .5rem .35rem; font-size: .84rem; }
   .hangout-rankings { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
   .hangout-ranking { padding: .7rem .75rem; }
   .hangout-ranking-list { gap: .3rem; margin-top: .5rem; }
