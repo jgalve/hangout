@@ -324,7 +324,8 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
   appearance: none;
 }
 .discover-filter-chevron { position: absolute; right: .55rem; width: 14px; height: 14px; color: var(--color-muted); pointer-events: none; }
-.hangout-rankings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
+.discover-highlights { display: grid; grid-template-columns: minmax(0, 1fr); gap: .75rem; margin-bottom: 1.25rem; }
+.hangout-rankings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
 .hangout-ranking { min-width: 0; padding: .85rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-alt); }
 .hangout-ranking-heading h3 { margin: 0; font-size: 1.05rem; }
 .hangout-ranking-heading p { margin: .3rem 0 0; color: var(--color-muted); font-size: .82rem; }
@@ -348,6 +349,48 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
 .hangout-ranking-pin:disabled { cursor: not-allowed; opacity: .65; }
 .hangout-ranking-pinned { grid-area: pin; justify-self: center; color: var(--color-secondary-strong); font-size: .8rem; font-weight: 700; }
 .hangout-ranking-error { margin: .65rem 0 0; color: var(--color-danger-strong); font-size: .875rem; }
+.featured-hangout { display: grid; grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr); gap: 1.25rem; padding: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-lg); background: var(--color-surface); }
+.featured-hangout-photo { min-width: 0; min-height: 180px; aspect-ratio: 4 / 3; overflow: hidden; border-radius: var(--radius-md); background: var(--color-secondary-soft); }
+.featured-hangout-photo img { display: block; width: 100%; height: 100%; min-height: 180px; object-fit: cover; }
+.featured-hangout-placeholder { display: grid; min-height: 220px; place-content: center; justify-items: center; gap: .6rem; color: var(--color-secondary-strong); font-size: .9rem; font-weight: 700; }
+.featured-hangout-placeholder svg { width: 48px; height: 48px; }
+.featured-hangout-content { min-width: 0; align-self: center; }
+.featured-hangout-eyebrow { margin: 0 0 .35rem; color: var(--color-secondary-strong); font-size: .78rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; }
+.featured-hangout-content h3 { margin: 0; font-size: clamp(1.35rem, 3vw, 1.8rem); }
+.featured-hangout-audience { display: inline-flex; min-height: 28px; align-items: center; margin-top: .5rem; padding: .2rem .65rem; border-radius: 999px; background: var(--color-secondary-soft); color: var(--color-secondary-strong); font-size: .82rem; font-weight: 700; }
+.featured-hangout-content h4 { margin: .85rem 0 .35rem; font-size: 1.1rem; }
+.featured-hangout-content > p:not(.featured-hangout-eyebrow) { overflow-wrap: anywhere; }
+.featured-hangout-demo { padding: .6rem .75rem; border: 1px solid var(--color-warning); border-radius: var(--radius-sm); background: var(--color-alert); color: var(--color-ink); font-size: .83rem; font-weight: 800; }
+.featured-hangout-terms { color: var(--color-muted); font-size: .85rem; }
+.featured-hangout-actions { display: flex; flex-wrap: wrap; align-items: flex-start; gap: .55rem; margin-top: .35rem; }
+.featured-hangout-map-links { display: grid; justify-items: start; gap: .2rem; }
+.featured-hangout-map, .featured-hangout-cta, .featured-hangout-pin { display: inline-flex; align-items: center; justify-content: center; min-height: 44px; text-decoration: none; }
+.featured-hangout-map-attribution { display: inline-flex; min-height: 44px; align-items: center; color: var(--color-muted); font-size: .72rem; }
+.featured-hangout-map-attribution a { color: inherit; }
+.featured-hangout-pin:disabled { cursor: not-allowed; opacity: .65; }
+.featured-hangout-pinned { display: inline-flex; min-height: 44px; align-items: center; color: var(--color-secondary-strong); font-size: .85rem; font-weight: 700; }
+.featured-hangout-preview { border-style: dashed; }
+.admin-featured { max-width: 58rem; }
+.admin-featured > h2 { margin-bottom: .35rem; }
+.admin-featured-form { display: grid; gap: .55rem; }
+.admin-featured-form label { margin: .25rem 0; }
+.admin-featured-form textarea { min-height: 96px; }
+.admin-featured-form .fine { display: block; margin-top: .25rem; }
+.admin-featured-place-search { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: end; gap: .25rem .6rem; }
+.admin-featured-place-search label { margin: 0; }
+.admin-featured-place-search > button { min-height: 44px; }
+.admin-featured-place-search > .fine, .admin-featured-place-search > .hangout-ranking-error, .admin-featured-place-results, .admin-featured-place-selected { grid-column: 1 / -1; }
+.admin-featured-place-results { display: grid; gap: .4rem; margin: 0; padding: 0; list-style: none; }
+.admin-featured-place-results button { display: grid; width: 100%; min-height: 44px; gap: .15rem; padding: .55rem .7rem; border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-surface); color: var(--color-ink); text-align: left; }
+.admin-featured-place-results button:hover, .admin-featured-place-results button:focus-visible { border-color: var(--color-secondary-strong); }
+.admin-featured-place-results small { overflow-wrap: anywhere; color: var(--color-muted); }
+.admin-featured-place-selected { margin: .25rem 0; overflow-wrap: anywhere; }
+.admin-featured-place-selected a { display: inline-flex; min-height: 44px; align-items: center; }
+.admin-featured-cta-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.admin-featured-form .admin-featured-check { display: flex; min-height: 44px; align-items: center; gap: .6rem; }
+.admin-featured-check input { flex: 0 0 20px; width: 20px; height: 20px; min-height: 20px; margin: 0; }
+.admin-featured-preview { display: grid; gap: .65rem; margin-top: 1.5rem; }
+.admin-featured-preview h3 { margin: 0; }
 .candidate-grid { display: grid; gap: 1rem; }
 .candidate {
   position: relative;
@@ -741,13 +784,22 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
   .discover-heading h2 { margin: 0; }
   .discover-heading p { max-width: 12rem; font-size: .78rem; }
   .discover-filter { flex-basis: clamp(8.5rem, 42vw, 10rem); }
-  .hangout-rankings { grid-template-columns: 1fr; gap: .6rem; margin-bottom: 1rem; }
+  .discover-highlights { gap: .6rem; margin-bottom: 1rem; }
+  .hangout-rankings { grid-template-columns: minmax(0, 1fr); gap: .6rem; }
   .hangout-ranking { padding: .7rem .75rem; }
   .hangout-ranking-list { gap: .3rem; margin-top: .5rem; }
   .hangout-ranking-row { grid-template-columns: 1.25rem minmax(0, 1fr) auto; gap: 0 .35rem; padding: .35rem .4rem; }
   .hangout-ranking-pin { padding: .4rem .5rem; font-size: .78rem; }
   .hangout-ranking-place-name { font-size: .84rem; }
   .hangout-ranking-count { font-size: .74rem; }
+  .featured-hangout { grid-template-columns: minmax(0, 1fr); gap: .75rem; padding: .75rem; }
+  .featured-hangout-photo, .featured-hangout-photo img { min-height: 0; aspect-ratio: 16 / 9; }
+  .featured-hangout-placeholder { min-height: 0; height: 100%; }
+  .featured-hangout-content h3 { font-size: 1.35rem; }
+  .admin-featured-cta-fields { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
+  .admin-featured-place-search { grid-template-columns: minmax(0, 1fr); gap: .25rem; }
+  .admin-featured-place-search > button { width: 100%; }
+  .admin-featured-preview { margin-top: 1rem; }
   .candidate { padding: .75rem; border-radius: 16px; }
   .candidate-media { aspect-ratio: 1.08 / 1; border-radius: 12px; }
   .candidate-avatar { font-size: 3.5rem; }

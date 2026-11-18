@@ -1,8 +1,11 @@
 import {FormEvent,useCallback,useEffect,useRef,useState} from 'react'
 import {supabase} from '../lib/supabase'
+import {FeaturedHangoutCard,getOpenStreetMapUrl} from './FeaturedHangoutCard'
+import type {FeaturedHangout} from './FeaturedHangoutCard'
 
 type AdminRole='admin'|'moderator'
-type DashboardTab='overview'|'users'|'reports'|'verification'
+type DashboardTab='overview'|'users'|'reports'|'verification'|'featured'
+type FeaturedPlace={id:string;name:string;display_name:string;osm_type:string;osm_id:string}
 type Stats={
   total_users:number
   enabled_users:number
@@ -57,6 +60,21 @@ type VerificationRequest={
 }
 
 const pageSize=25
+const emptyFeaturedHangout:FeaturedHangout={
+  place_id:'',
+  osm_type:'',
+  osm_id:'',
+  venue_name:'',
+  promo_title:'',
+  promo_description:'',
+  promo_terms:'',
+  photo_url:null,
+  promo_cta_label:null,
+  promo_cta_url:null,
+  demo_only:true,
+  is_published:false,
+  updated_at:'',
+}
 const statusLabels:Record<Report['status'],string>={
   open:'Open',
   reviewing:'Reviewing',
@@ -66,6 +84,21 @@ const statusLabels:Record<Report['status'],string>={
 
 function formatDate(value:string){
   return new Date(value).toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'})
+}
+
+function getOptionalHttpsUrl(value:string|null){
+  if(!value?.trim())return null
+  try{
+    const url=new URL(value.trim())
+    return url.protocol==='https:'?url.toString():undefined
+  }catch{
+    return undefined
+  }
+}
+
+function getErrorMessage(error:unknown,fallback:string){
+  if(typeof error==='object'&&error!==null&&'message' in error&&typeof error.message==='string')return error.message
+  return fallback
 }
 
 export function AdminDashboard({role}:{role:AdminRole}){
@@ -96,6 +129,13 @@ export function AdminDashboard({role}:{role:AdminRole}){
   const [verificationImageLoading,setVerificationImageLoading]=useState(false)
   const [verificationBusy,setVerificationBusy]=useState(false)
   const verificationImageLoadId=useRef(0)
+  const [featuredDraft,setFeaturedDraft]=useState<FeaturedHangout>(emptyFeaturedHangout)
+  const [featuredPlaceSearch,setFeaturedPlaceSearch]=useState('')
+  const [featuredPlaceResults,setFeaturedPlaceResults]=useState<FeaturedPlace[]>([])
+  const [featuredPlaceLoading,setFeaturedPlaceLoading]=useState(false)
+  const [featuredPlaceError,setFeaturedPlaceError]=useState('')
+  const [selectedFeaturedPlace,setSelectedFeaturedPlace]=useState<FeaturedPlace|null>(null)
+  const [featuredBusy,setFeaturedBusy]=useState(false)
   const [loading,setLoading]=useState(true)
   const [error,setError]=useState('')
   const [notice,setNotice]=useState('')
@@ -137,6 +177,69 @@ export function AdminDashboard({role}:{role:AdminRole}){
     setVerificationRequests((data||[]) as VerificationRequest[])
   },[])
 
+  const loadFeaturedHangout=useCallback(async()=>{
+    const {data,error:rpcError}=await supabase!.rpc('admin_get_featured_hangout')
+    if(rpcError)throw new Error(rpcError.message)
+    const rows=(data||[]) as FeaturedHangout[]
+    const featured=rows[0]||emptyFeaturedHangout
+    setFeaturedDraft(featured)
+    setFeaturedPlaceResults([])
+    setFeaturedPlaceError('')
+    if(!featured.place_id){
+      setSelectedFeaturedPlace(null)
+      setFeaturedPlaceSearch('')
+      return
+    }
+    const {data:place,error:placeError}=await supabase!.from('places')
+      .select('id,name,display_name,osm_type,osm_id')
+      .eq('id',featured.place_id)
+      .maybeSingle()
+    if(placeError)throw new Error(placeError.message)
+    if(!place)throw new Error('The featured hangout place is missing from the place catalog.')
+    const selectedPlace=place as FeaturedPlace
+    setSelectedFeaturedPlace(selectedPlace)
+    setFeaturedPlaceSearch(selectedPlace.name)
+  },[])
+
+  async function searchFeaturedPlaces(){
+    const query=featuredPlaceSearch.trim()
+    setFeaturedPlaceResults([])
+    setFeaturedPlaceError('')
+    if(query.length<2){
+      setFeaturedPlaceError('Enter at least two characters to search places.')
+      return
+    }
+    setFeaturedPlaceLoading(true)
+    try{
+      const {data,error:searchError}=await supabase!.from('places')
+        .select('id,name,display_name,osm_type,osm_id')
+        .ilike('name',`%${query}%`)
+        .order('name')
+        .limit(10)
+      if(searchError)throw new Error(searchError.message)
+      setFeaturedPlaceResults((data||[]) as FeaturedPlace[])
+      if(!(data||[]).length)setFeaturedPlaceError('No places matched. Try another name.')
+    }catch(searchError){
+      setFeaturedPlaceError(getErrorMessage(searchError,'Unable to search the place catalog.'))
+    }finally{
+      setFeaturedPlaceLoading(false)
+    }
+  }
+
+  function chooseFeaturedPlace(place:FeaturedPlace){
+    setSelectedFeaturedPlace(place)
+    setFeaturedPlaceSearch(place.name)
+    setFeaturedPlaceResults([])
+    setFeaturedPlaceError('')
+    setFeaturedDraft(current=>({
+      ...current,
+      place_id:place.id,
+      osm_type:place.osm_type,
+      osm_id:place.osm_id,
+      venue_name:place.name,
+    }))
+  }
+
   async function refreshVerificationQueue(){
     try{
       await loadVerifications()
@@ -154,12 +257,13 @@ export function AdminDashboard({role}:{role:AdminRole}){
       if(activeTab==='users'&&role==='admin')await loadUsers(submittedSearch,userOffset)
       if(activeTab==='reports')await loadReports(reportFilter)
       if(activeTab==='verification')await loadVerifications()
+      if(activeTab==='featured'&&role==='admin')await loadFeaturedHangout()
     }catch(loadError){
       setError(loadError instanceof Error?loadError.message:'Unable to load admin data.')
     }finally{
       setLoading(false)
     }
-  },[activeTab,loadReports,loadStats,loadUsers,loadVerifications,reportFilter,role,submittedSearch,userOffset])
+  },[activeTab,loadFeaturedHangout,loadReports,loadStats,loadUsers,loadVerifications,reportFilter,role,submittedSearch,userOffset])
 
   useEffect(()=>{void refreshCurrentTab()},[refreshCurrentTab])
 
@@ -208,6 +312,54 @@ export function AdminDashboard({role}:{role:AdminRole}){
     event.preventDefault()
     setSubmittedSearch(searchText.trim())
     setUserOffset(0)
+  }
+
+  async function saveFeaturedHangout(event:FormEvent<HTMLFormElement>){
+    event.preventDefault()
+    setError('')
+    setNotice('')
+    const photoUrl=getOptionalHttpsUrl(featuredDraft.photo_url)
+    const ctaUrl=getOptionalHttpsUrl(featuredDraft.promo_cta_url)
+    const ctaLabel=featuredDraft.promo_cta_label?.trim()||null
+    if(!featuredDraft.place_id){
+      setError('Select a place from the place catalog before saving.')
+      return
+    }
+    if(photoUrl===undefined){
+      setError('Photo URL must use HTTPS.')
+      return
+    }
+    if(ctaUrl===undefined){
+      setError('Call-to-action URL must use HTTPS.')
+      return
+    }
+    if(Boolean(ctaLabel)!==Boolean(ctaUrl)){
+      setError('Provide both a call-to-action label and URL, or leave both blank.')
+      return
+    }
+
+    setFeaturedBusy(true)
+    try{
+      const {error:saveError}=await supabase!.rpc('admin_save_featured_hangout',{
+        p_place_id:featuredDraft.place_id,
+        p_venue_name:featuredDraft.venue_name.trim(),
+        p_promo_title:featuredDraft.promo_title.trim(),
+        p_promo_description:featuredDraft.promo_description.trim(),
+        p_promo_terms:featuredDraft.promo_terms.trim(),
+        p_photo_url:photoUrl,
+        p_promo_cta_label:ctaLabel,
+        p_promo_cta_url:ctaUrl,
+        p_demo_only:featuredDraft.demo_only,
+        p_is_published:featuredDraft.is_published,
+      })
+      if(saveError)throw new Error(saveError.message)
+      await loadFeaturedHangout()
+      setNotice(featuredDraft.is_published?'Featured hangout saved and published.':'Featured hangout saved as a draft.')
+    }catch(saveError){
+      setError(getErrorMessage(saveError,'Unable to save the featured hangout.'))
+    }finally{
+      setFeaturedBusy(false)
+    }
   }
 
   async function updateAccountStatus(event:FormEvent<HTMLFormElement>){
@@ -374,6 +526,10 @@ export function AdminDashboard({role}:{role:AdminRole}){
     }
   }
 
+  const selectedFeaturedPlaceMapUrl=selectedFeaturedPlace
+    ?getOpenStreetMapUrl(selectedFeaturedPlace.osm_type,selectedFeaturedPlace.osm_id)
+    :null
+
   return <section className="admin-dashboard" aria-labelledby="admin-title">
     <div className="admin-heading">
       <div>
@@ -387,6 +543,7 @@ export function AdminDashboard({role}:{role:AdminRole}){
       {role==='admin'&&<>
         <button type="button" aria-pressed={activeTab==='overview'} onClick={()=>chooseTab('overview')}>Overview</button>
         <button type="button" aria-pressed={activeTab==='users'} onClick={()=>chooseTab('users')}>Users</button>
+        <button type="button" aria-pressed={activeTab==='featured'} onClick={()=>chooseTab('featured')}>Featured hangout</button>
       </>}
       <button type="button" aria-pressed={activeTab==='reports'} onClick={()=>chooseTab('reports')}>Reports</button>
       <button type="button" aria-pressed={activeTab==='verification'} onClick={()=>chooseTab('verification')}>ID verification</button>
@@ -406,6 +563,157 @@ export function AdminDashboard({role}:{role:AdminRole}){
         <article className="admin-stat"><span>Open reports</span><strong>{stats.pending_reports.toLocaleString()}</strong></article>
       </div>}
       <p className="fine">Metrics are aggregate counts. “Enabled” means the account has not been deactivated; it does not indicate recent activity.</p>
+    </section>}
+
+    {!loading&&activeTab==='featured'&&role==='admin'&&<section className="admin-featured" aria-labelledby="featured-admin-heading">
+      <h2 id="featured-admin-heading">Featured hangout promo</h2>
+      <p>Configure the single Discover feature shown between Popular and Trending hangouts. Only administrators can edit it.</p>
+      <form className="admin-featured-form" onSubmit={event=>void saveFeaturedHangout(event)}>
+        <div className="admin-featured-place-search">
+          <label htmlFor="featured-place-search">Find the actual place
+            <input
+              id="featured-place-search"
+              type="search"
+              value={featuredPlaceSearch}
+              onChange={event=>{
+                const value=event.target.value
+                setFeaturedPlaceSearch(value)
+                setFeaturedPlaceResults([])
+                setFeaturedPlaceError('')
+                if(value!==selectedFeaturedPlace?.name){
+                  setSelectedFeaturedPlace(null)
+                  setFeaturedDraft(current=>({...current,place_id:'',osm_type:'',osm_id:''}))
+                }
+              }}
+              onKeyDown={event=>{
+                if(event.key==='Enter'){
+                  event.preventDefault()
+                  void searchFeaturedPlaces()
+                }
+              }}
+              maxLength={100}
+              aria-describedby="featured-place-help"
+            />
+          </label>
+          <button type="button" className="secondary" disabled={featuredPlaceLoading} onClick={()=>void searchFeaturedPlaces()}>
+            {featuredPlaceLoading?'Searching…':'Search places'}
+          </button>
+          <span className="fine" id="featured-place-help">Choose a catalog place to enable pinning and its OpenStreetMap link.</span>
+          {featuredPlaceError&&<p className="hangout-ranking-error" role="alert">{featuredPlaceError}</p>}
+          {featuredPlaceResults.length>0&&<ul className="admin-featured-place-results" aria-label="Place search results">
+            {featuredPlaceResults.map(place=><li key={place.id}>
+              <button type="button" onClick={()=>chooseFeaturedPlace(place)}>
+                <strong>{place.name}</strong>
+                <small>{place.display_name}</small>
+              </button>
+            </li>)}
+          </ul>}
+          {selectedFeaturedPlace&&<p className="admin-featured-place-selected" role="status">
+            Selected: <strong>{selectedFeaturedPlace.name}</strong>
+            {selectedFeaturedPlaceMapUrl&&<> · <a href={selectedFeaturedPlaceMapUrl} target="_blank" rel="noopener noreferrer">View map</a></>}
+          </p>}
+        </div>
+        <label htmlFor="featured-venue">Hangout name
+          <input
+            id="featured-venue"
+            value={featuredDraft.venue_name}
+            onChange={event=>setFeaturedDraft(current=>({...current,venue_name:event.target.value}))}
+            maxLength={120}
+            required
+          />
+        </label>
+        <label htmlFor="featured-promo-title">Promo package title
+          <input
+            id="featured-promo-title"
+            value={featuredDraft.promo_title}
+            onChange={event=>setFeaturedDraft(current=>({...current,promo_title:event.target.value}))}
+            maxLength={120}
+            required
+          />
+        </label>
+        <label htmlFor="featured-promo-description">Description
+          <textarea
+            id="featured-promo-description"
+            value={featuredDraft.promo_description}
+            onChange={event=>setFeaturedDraft(current=>({...current,promo_description:event.target.value}))}
+            maxLength={500}
+            required
+          />
+        </label>
+        <label htmlFor="featured-promo-terms">Terms and disclosure
+          <textarea
+            id="featured-promo-terms"
+            value={featuredDraft.promo_terms}
+            onChange={event=>setFeaturedDraft(current=>({...current,promo_terms:event.target.value}))}
+            maxLength={1000}
+            required
+          />
+        </label>
+        <label htmlFor="featured-photo-url">Photo URL (optional HTTPS)
+          <input
+            id="featured-photo-url"
+            type="url"
+            inputMode="url"
+            value={featuredDraft.photo_url||''}
+            onChange={event=>setFeaturedDraft(current=>({...current,photo_url:event.target.value||null}))}
+            maxLength={2048}
+            placeholder="https://example.com/venue-photo.jpg"
+          />
+          <span className="fine">A photo placeholder appears until an image URL is added.</span>
+        </label>
+        <div className="admin-featured-cta-fields">
+          <label htmlFor="featured-cta-label">Call-to-action label (optional)
+            <input
+              id="featured-cta-label"
+              value={featuredDraft.promo_cta_label||''}
+              onChange={event=>setFeaturedDraft(current=>({...current,promo_cta_label:event.target.value||null}))}
+              maxLength={60}
+            />
+          </label>
+          <label htmlFor="featured-cta-url">Call-to-action URL (optional HTTPS)
+            <input
+              id="featured-cta-url"
+              type="url"
+              inputMode="url"
+              value={featuredDraft.promo_cta_url||''}
+              onChange={event=>setFeaturedDraft(current=>({...current,promo_cta_url:event.target.value||null}))}
+              maxLength={2048}
+              placeholder="https://example.com/offer"
+            />
+          </label>
+        </div>
+        <label className="admin-featured-check">
+          <input
+            type="checkbox"
+            checked={featuredDraft.demo_only}
+            aria-describedby="featured-demo-help"
+            onChange={event=>setFeaturedDraft(current=>({...current,demo_only:event.target.checked}))}
+          />
+          Mark as a sample only (not real or redeemable)
+        </label>
+        {featuredDraft.demo_only&&<p className="fine" id="featured-demo-help">The Discover card will show a prominent sample-only disclaimer while this is checked.</p>}
+        <label className="admin-featured-check">
+          <input
+            type="checkbox"
+            checked={featuredDraft.is_published}
+            onChange={event=>setFeaturedDraft(current=>({...current,is_published:event.target.checked}))}
+          />
+          Publish on Discover
+        </label>
+        <div className="admin-actions">
+          <button type="submit" className="primary" disabled={featuredBusy||!featuredDraft.place_id}>
+            {featuredBusy?'Saving…':'Save featured hangout'}
+          </button>
+        </div>
+      </form>
+      {featuredDraft.venue_name.trim()&&featuredDraft.promo_title.trim()&&<section className="admin-featured-preview" aria-labelledby="featured-preview-heading">
+        <h3 id="featured-preview-heading">Discover preview</h3>
+        <FeaturedHangoutCard hangout={{
+          ...featuredDraft,
+          photo_url:getOptionalHttpsUrl(featuredDraft.photo_url)||null,
+          promo_cta_url:getOptionalHttpsUrl(featuredDraft.promo_cta_url)||null,
+        }} preview/>
+      </section>}
     </section>}
 
     {!loading&&activeTab==='users'&&role==='admin'&&<section aria-labelledby="users-heading">

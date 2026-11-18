@@ -54,11 +54,11 @@ async function main(){
   if(placeError)throw new Error(`Could not create the Makati test place. ${placeError.message}`)
 
   const seeds=[
-    {name:'Test Alex',email:'hangout-seed-01@example.com',bio:'Test profile: coffee walks and weekend markets.',interests:['Coffee','Markets'],hangout_personality:['Coffee and conversation','Walk and explore','Markets and pop-ups'],color:'#e8b95b',birth_date:'1996-04-12'},
-    {name:'Test Bea',email:'hangout-seed-02@example.com',bio:'Test profile: live music and trying new food spots.',interests:['Live music','Food spots'],hangout_personality:['Live music','Food trip','Nightlife'],color:'#b8c3a8',birth_date:'1994-09-23'},
-    {name:'Test Chris',email:'hangout-seed-03@example.com',bio:'Test profile: books, parks, and slow mornings.',interests:['Books','Outdoors'],hangout_personality:['Quiet parks','Museums and galleries','Beach or nature trips'],color:'#e6c6a8',birth_date:'1998-02-08'},
-    {name:'Test Dani',email:'hangout-seed-04@example.com',bio:'Test profile: art, culture, and good coffee.',interests:['Art & culture','Coffee'],hangout_personality:['Museums and galleries','Coffee and conversation','Community events'],color:'#d9b8a5',birth_date:'1993-07-17'},
-    {name:'Test Eli',email:'hangout-seed-05@example.com',bio:'Test profile: fitness, dogs, and exploring Makati.',interests:['Fitness','Dogs'],hangout_personality:['Sports and fitness','Walk and explore','Games and activities'],color:'#c6d0b8',birth_date:'1997-11-30'},
+    {name:'Test Alex',email:'hangout-seed-01@example.com',bio:'Test profile: coffee walks and weekend markets.',interests:['Coffee','Markets'],hangout_personality:['Coffee','Explore','Markets'],color:'#e8b95b',birth_date:'1996-04-12'},
+    {name:'Test Bea',email:'hangout-seed-02@example.com',bio:'Test profile: live music and trying new food spots.',interests:['Live music','Food spots'],hangout_personality:['Music','Foodie','Nightlife'],color:'#b8c3a8',birth_date:'1994-09-23'},
+    {name:'Test Chris',email:'hangout-seed-03@example.com',bio:'Test profile: books, parks, and slow mornings.',interests:['Books','Outdoors'],hangout_personality:['Parks','Culture','Nature'],color:'#e6c6a8',birth_date:'1998-02-08'},
+    {name:'Test Dani',email:'hangout-seed-04@example.com',bio:'Test profile: art, culture, and good coffee.',interests:['Art & culture','Coffee'],hangout_personality:['Culture','Coffee','Community'],color:'#d9b8a5',birth_date:'1993-07-17'},
+    {name:'Test Eli',email:'hangout-seed-05@example.com',bio:'Test profile: fitness, dogs, and exploring Makati.',interests:['Fitness','Dogs'],hangout_personality:['Fitness','Explore','Games'],color:'#c6d0b8',birth_date:'1997-11-30'},
   ]
 
   const {data:userPage,error:listError}=await supabase.auth.admin.listUsers({page:1,perPage:1000})

@@ -51,11 +51,16 @@ Document entry points, steps, decision states, validation, error/empty/loading/s
 - Discover shows up to five popular hangouts, ranked by distinct active users who pinned each place, and up to five trending hangouts, ranked by distinct active users who pinned each place in the last seven days. The rankings expose aggregate counts only, not member identities.
 - Ranked places are informational; each has a **Pin hangout** button that adds the place to the signed-in user's profile. Show an already-pinned state, respect the five-place limit, and report errors. Pinning a ranked place does not change the Discover filter.
 - Show loading, empty, and error states for the rankings and the user's existing pins.
+- Place the single published featured hangout between Popular and Trending. Show its configured venue, pair-focused promo copy, optional photo, terms, and optional HTTPS call-to-action. Use a labeled photo placeholder when no image is configured.
+- The featured card links to its selected OpenStreetMap place and lets the signed-in user pin that same place. Show already-pinned, pinning, five-place-limit, and error states; keep the map link and pin target tied to one catalog record.
+- The featured section reads only published content for an active signed-in user. An unpublished draft is available only through the admin workspace.
+- The initial Solaire Pasay promo is sample content, prominently labeled as not a real offer, not redeemable, and not affiliated with the venue. Keep the sample-only marker until actual offer details are confirmed.
 
 ### Admin and moderator dashboard
 - Only accounts with a server-validated moderator or admin role can open the operations workspace.
 - Admins can view aggregate user, match, and report counts and search users by name or email. Email lookup is available only through an admin-authorized server function.
 - Admins can deactivate or reactivate an account with a required reason. Deactivation is reversible, retains account and safety data, and denies app operations; it does not permanently delete the Auth account.
+- Admins can configure the single featured Discover hangout by selecting a place from the catalog, then edit its display name, promo copy, terms, optional HTTPS photo and call-to-action, sample-only status, and publish state. Database functions enforce admin access; clients cannot read or write the settings table directly.
 - Moderators can review reports, view their limited evidence snapshots and action history, and move cases to reviewing, resolved, or dismissed.
 - Unauthorized users cannot access dashboard data or actions by calling the database API directly. Show loading, empty, and error states for each queue or search.
 

@@ -2,6 +2,9 @@ import {useEffect,useState} from 'react'
 import {supabase} from '../lib/supabase'
 import {pinProfilePlace} from '../lib/profilePlaces'
 import {getPersonalityLabels,ProfileDialog} from './ProfileDialog'
+import {FeaturedHangoutCard} from './FeaturedHangoutCard'
+import type {FeaturedHangout} from './FeaturedHangoutCard'
+import type {FeaturedPinState} from './FeaturedHangoutCard'
 import type {ViewableProfile} from './ProfileDialog'
 type RankedHangout={category:'popular'|'trending';ranking_position:number;place_id:string;place_name:string;user_count:number}
 type PinnedPlace={place_id:string;position:number}
@@ -15,6 +18,9 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
   const [rankings,setRankings]=useState<RankedHangout[]>([])
   const [rankingsLoading,setRankingsLoading]=useState(true)
   const [rankingsError,setRankingsError]=useState('')
+  const [featuredHangout,setFeaturedHangout]=useState<FeaturedHangout|null>(null)
+  const [featuredLoading,setFeaturedLoading]=useState(true)
+  const [featuredError,setFeaturedError]=useState('')
   const [pinnedPlaces,setPinnedPlaces]=useState<PinnedPlace[]>([])
   const [pinnedPlacesLoading,setPinnedPlacesLoading]=useState(true)
   const [pinnedPlacesError,setPinnedPlacesError]=useState('')
@@ -62,18 +68,56 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
     setPinnedPlacesLoading(false)
   }
 
-  async function pinRankedPlace(place:RankedHangout){
-    setPinningPlaceId(place.place_id)
-    setPinFeedback(null)
-    const result=await pinProfilePlace(userId,place.place_id)
-    setPinningPlaceId(null)
-    if(result.error!==null){
-      setPinFeedback({message:result.error,isError:true})
-      await loadPinnedPlaces()
-      return
+  async function loadFeaturedHangout(){
+    setFeaturedLoading(true)
+    setFeaturedError('')
+    try{
+      const {data,error}=await supabase!.rpc('get_featured_hangout')
+      if(error){
+        setFeaturedHangout(null)
+        setFeaturedError(error.message)
+        return
+      }
+      const rows=(data||[]) as FeaturedHangout[]
+      setFeaturedHangout(rows[0]||null)
+    }catch(error){
+      setFeaturedHangout(null)
+      setFeaturedError(error instanceof Error?error.message:'Unable to load the featured hangout.')
+    }finally{
+      setFeaturedLoading(false)
     }
-    setPinnedPlaces(current=>[...current,{place_id:place.place_id,position:result.position}])
-    setPinFeedback({message:`${place.place_name} pinned to your hangout places.`,isError:false})
+  }
+
+  async function pinHangoutPlace(placeId:string,placeName:string){
+    setPinningPlaceId(placeId)
+    setPinFeedback(null)
+    try{
+      const result=await pinProfilePlace(userId,placeId)
+      if(result.error!==null){
+        setPinFeedback({message:result.error,isError:true})
+        await loadPinnedPlaces()
+        return
+      }
+      setPinnedPlaces(current=>[...current,{place_id:placeId,position:result.position}])
+      setPinFeedback({message:`${placeName} pinned to your hangout places.`,isError:false})
+    }catch(error){
+      setPinFeedback({
+        message:error instanceof Error?error.message:'Unable to pin this hangout.',
+        isError:true,
+      })
+      await loadPinnedPlaces()
+    }finally{
+      setPinningPlaceId(null)
+    }
+  }
+
+  async function pinRankedPlace(place:RankedHangout){
+    await pinHangoutPlace(place.place_id,place.place_name)
+  }
+
+  async function pinFeaturedHangout(){
+    if(!featuredHangout)return
+    await pinHangoutPlace(featuredHangout.place_id,featuredHangout.venue_name)
   }
 
   function renderRanking(category:'popular'|'trending',title:string,description:string,emptyMessage:string){
@@ -110,7 +154,17 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
     </section>
   }
 
-  useEffect(()=>{void load();void loadRankings();void loadPinnedPlaces()},[userId])
+  useEffect(()=>{void load();void loadRankings();void loadPinnedPlaces();void loadFeaturedHangout()},[userId])
+
+  const featuredAlreadyPinned=Boolean(featuredHangout&&pinnedPlaces.some(place=>place.place_id===featuredHangout.place_id))
+  const featuredPinState:FeaturedPinState|undefined=featuredHangout
+    ?featuredAlreadyPinned?'pinned'
+      :pinningPlaceId===featuredHangout.place_id?'pinning'
+        :pinningPlaceId?'busy'
+        :pinnedPlacesLoading?'checking'
+          :pinnedPlacesError||!featuredHangout.place_id?'unavailable'
+            :pinnedPlaces.length>=5?'limit':'available'
+    :undefined
 
   async function swipe(person:Candidate,choice:'like'|'pass'){
     setItems(v=>v.filter(candidate=>candidate.id!==person.id))
@@ -144,9 +198,18 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
         </div>
       </div>}
     </div>
-    <section className="hangout-rankings" aria-label="Popular and trending hangouts">
-      {renderRanking('popular','Popular hangouts','Most pinned by active users.','No pinned hangouts yet.')}
-      {renderRanking('trending','Trending hangouts','Most pinned in the last 7 days.','No new pins in the last 7 days yet.')}
+    <section className="discover-highlights" aria-label="Popular, featured, and trending hangouts">
+      {featuredLoading&&<p className="fine" role="status">Loading featured hangout…</p>}
+      {featuredError&&<p className="hangout-ranking-error" role="alert">Unable to load the featured hangout: {featuredError}</p>}
+      {featuredHangout&&<FeaturedHangoutCard
+        hangout={featuredHangout}
+        pinState={featuredPinState}
+        onPin={()=>{void pinFeaturedHangout()}}
+      />}
+      <div className="hangout-rankings">
+        {renderRanking('popular','Popular hangouts','Most pinned by active users.','No pinned hangouts yet.')}
+        {renderRanking('trending','Trending hangouts','Most pinned in the last 7 days.','No new pins in the last 7 days yet.')}
+      </div>
     </section>
     {pinnedPlacesError&&<p className="hangout-ranking-error" role="alert">Unable to check your pinned hangouts: {pinnedPlacesError}</p>}
     {pinFeedback&&<p className={pinFeedback.isError?'hangout-ranking-error':'fine'} role={pinFeedback.isError?'alert':'status'}>{pinFeedback.message}</p>}
@@ -181,7 +244,7 @@ export function Discovery({onMatch,userId}:{onMatch:()=>void;userId:string}){
         <div className="actions"><button className="secondary" onClick={()=>swipe(person,'pass')}>Not now</button><button className="primary" onClick={()=>swipe(person,'like')}>Interested</button></div>
       </article>)}
     </div>:<p>No discoverable people in this list share this place. Choose another place or select “All places.”</p>:<p>{msg||'Loading candidates…'}</p>}
-    <button className="link" onClick={()=>{void load();void loadRankings();void loadPinnedPlaces()}}>Refresh candidates</button>
+    <button className="link" onClick={()=>{void load();void loadRankings();void loadPinnedPlaces();void loadFeaturedHangout()}}>Refresh candidates</button>
     <p className="status">{msg}</p>
     {selected&&<ProfileDialog person={selected} onClose={()=>setSelected(null)}/>}
   </section>

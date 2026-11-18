@@ -95,6 +95,21 @@ Use this lightweight template per feature.
 - Developer notes: The existing place-pin timestamp supports the requested seven-day window; the new migration adds only a read-only aggregate RPC. The migration has not been applied.
 - QA results: `npm run build` and `git diff --check` passed. `npm run test:db` could not connect because local Postgres at `127.0.0.1:54322` is unavailable; the ranking database tests remain unverified.
 
+## Feature: Featured hangout promo on Discover
+- Status: In QA
+- Goal: Show one admin-configurable featured hangout and pair-focused promo between the Popular and Trending sections.
+- Acceptance criteria:
+  - [x] Discover renders Popular, Featured, and Trending in that order, with a responsive photo placeholder.
+  - [x] Admins can edit the venue, promo copy, terms, optional HTTPS photo and call-to-action, demo-only marker, and publish state.
+  - [x] The published Solaire Pasay sample is clearly labeled as a demo and not redeemable or venue-affiliated.
+  - [x] Admins select a catalog place; the featured card links to its OpenStreetMap element and pins that same place to the signed-in user's profile.
+  - [x] Featured pin controls show already-pinned, pinning, five-place-limit, and error states.
+  - [x] Draft content is hidden from Discover, and database functions enforce admin-only configuration access.
+  - [ ] Run featured-hangout pgTAP authorization, place association, and publish-state tests against local Supabase.
+- Files: `src/components/Discovery.tsx`, `src/components/AdminDashboard.tsx`, `src/components/FeaturedHangoutCard.tsx`, `src/styles.css`, `supabase/migrations/023_featured_hangout.sql`, `supabase/tests/database/featured_hangout.test.sql`, `docs/UX-FLOWS.md`
+- Developer notes: The initial promo is explicitly demo-only. No real discount, package, venue benefit, or partnership is claimed.
+- QA results: `npm run build` and `git diff --check` passed; the build retains Vite's existing large-chunk warning. The local public page returned HTTP 200, but authenticated Discover/admin states were not visually verified. `npm run test:db` was not run per user request; its 20 pgTAP assertions remain unexecuted, and migration 023 remains unapplied.
+
 ## Completed features
 
 ### Profile photo gallery
