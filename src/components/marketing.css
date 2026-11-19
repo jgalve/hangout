@@ -74,7 +74,7 @@
 .marketing-cta p:last-child{margin:0;color:var(--marketing-muted)}
 .marketing-footer{padding-block:2.5rem;background:var(--marketing-ink);color:var(--marketing-surface)}
 .marketing-footer-inner{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem 2rem;align-items:center}
-.marketing-footer .marketing-logo{color:var(--marketing-surface)}
+.marketing-footer .marketing-logo{background:transparent;color:var(--marketing-surface)}
 .marketing-footer p{margin:0;color:var(--marketing-surface-alt)}
 .marketing-footer nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem}
 .marketing-footer nav a{color:var(--marketing-surface);text-decoration-thickness:1px;text-underline-offset:3px}
