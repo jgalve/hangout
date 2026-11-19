@@ -1,4 +1,5 @@
 import {useState} from 'react'
+import {AtSign,Copy,Mail,MessageCircle,Share,Share2} from 'lucide-react'
 
 const shareTitle='Join HangOut'
 const shareText='Discover people who enjoy the same places you do on HangOut.'
@@ -37,12 +38,12 @@ export function DiscoveryShare(){
       {supportsNativeShare&&<p className="fine">Messenger may be available in your device’s share options.</p>}
     </div>
     <div className="discover-share-actions">
-      {supportsNativeShare&&<button className="primary" type="button" onClick={()=>void shareInvite()}>Share invite</button>}
-      <button className="secondary" type="button" onClick={()=>void copyInvite()}>Copy link</button>
-      <a className="secondary" href={`https://wa.me/?text=${messageUrl}`} target="_blank" rel="noopener noreferrer">WhatsApp</a>
-      <a className="secondary" href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener noreferrer">Facebook</a>
-      <a className="secondary" href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}`} target="_blank" rel="noopener noreferrer">X</a>
-      <a className="secondary" href={`mailto:?subject=${encodeURIComponent(shareTitle)}&body=${messageUrl}`}>Email</a>
+      {supportsNativeShare&&<button className="primary" type="button" onClick={()=>void shareInvite()}><Share2 className="share-icon" size={18} aria-hidden="true"/>Share invite</button>}
+      <button className="secondary" type="button" onClick={()=>void copyInvite()}><Copy className="share-icon" size={18} aria-hidden="true"/>Copy link</button>
+      <a className="secondary" href={`https://wa.me/?text=${messageUrl}`} target="_blank" rel="noopener noreferrer"><MessageCircle className="share-icon" size={18} aria-hidden="true"/>WhatsApp</a>
+      <a className="secondary" href={`https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`} target="_blank" rel="noopener noreferrer"><Share className="share-icon" size={18} aria-hidden="true"/>Facebook</a>
+      <a className="secondary" href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${shareUrl}`} target="_blank" rel="noopener noreferrer"><AtSign className="share-icon" size={18} aria-hidden="true"/>X</a>
+      <a className="secondary" href={`mailto:?subject=${encodeURIComponent(shareTitle)}&body=${messageUrl}`}><Mail className="share-icon" size={18} aria-hidden="true"/>Email</a>
     </div>
     {feedback&&<p className={feedback.isError?'hangout-ranking-error':'fine'} role={feedback.isError?'alert':'status'}>{feedback.message}</p>}
   </section>

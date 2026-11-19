@@ -12,7 +12,7 @@ Status: HangOut Design System v1.0 is the approved visual direction.
 - Use a warm, light neutral canvas with coral actions and teal place/community accents.
 - Favor clear hierarchy, welcoming language, readable content, and photo-forward discovery.
 - Avoid generic gradients, redundant decoration, unsupported verification claims, exaggerated shadows, and unnecessary visual density.
-- Use the supplied HangOut logo lockup at `public/hangout-logo.png`. Preserve its aspect ratio, white background, colors, and tagline; do not crop, recolor, or recreate it.
+- Use the supplied HangOut logo lockup at `public/hangout-logo.png` on light surfaces and `public/hangout-logo-white.png` in the dark marketing footer. Preserve each image's aspect ratio and original colors; do not crop, recolor, or recreate either logo.
 
 ## Design tokens
 

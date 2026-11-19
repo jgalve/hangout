@@ -86,6 +86,7 @@ h3 { font-size: 1.5rem; }
 .oauth-icon { display: inline-grid; flex: 0 0 24px; width: 24px; height: 24px; place-items: center; font-family: Arial, sans-serif; font-weight: 800; line-height: 1; }
 .oauth-icon-google { border: 1px solid var(--color-border); border-radius: 50%; background: var(--color-surface); color: #4285f4; font-size: 1rem; }
 .oauth-icon-facebook { border-radius: 50%; background: #1877f2; color: #fff; font-size: 1.15rem; padding-top: .15rem; }
+.social-action-icon { flex: 0 0 auto; color: var(--color-muted); }
 .oauth-note { margin: .75rem 0 0; text-align: center; }
 .auth-completion h2 { margin-top: 0; }
 .auth-completion > .secondary { margin-top: .75rem; }
@@ -330,7 +331,8 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
 .discover-share-intro p { margin: .35rem 0 0; color: var(--color-muted); font-size: .9rem; }
 .discover-share-intro .fine { font-size: .8rem; }
 .discover-share-actions { display: flex; flex-wrap: wrap; gap: .5rem; }
-.discover-share-actions > .primary, .discover-share-actions > .secondary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; padding: .55rem .85rem; text-align: center; text-decoration: none; }
+.discover-share-actions > .primary, .discover-share-actions > .secondary { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: .45rem; padding: .55rem .85rem; text-align: center; text-decoration: none; }
+.share-icon { flex: 0 0 auto; }
 .discover-share-actions > :focus-visible { outline: 2px solid var(--color-secondary-strong); outline-offset: 2px; }
 .hangout-rankings { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
 .hangout-ranking { min-width: 0; padding: .85rem 1rem; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-alt); }
@@ -592,6 +594,11 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
 .match-layout { display: grid; grid-template-columns: 220px 1fr; gap: 1rem; min-height: 500px; }
 .match-layout nav ul { list-style: none; padding: 0; margin: 0; }
 .match-layout nav button {
+  display: grid;
+  grid-template-columns: 2.5rem minmax(0, 1fr) auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  gap: .15rem .65rem;
   width: 100%;
   text-align: left;
   border: 0;
@@ -600,13 +607,31 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
   padding: .75rem;
 }
 .match-layout nav button.selected { background: var(--color-accent-soft); }
-.match-layout nav b {
-  float: right;
+.match-layout nav button > .match-avatar { grid-column: 1; grid-row: 1 / span 2; }
+.match-list-name { grid-column: 2; grid-row: 1; min-width: 0; overflow-wrap: anywhere; }
+.match-layout nav button > b {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
   background: var(--color-primary);
   color: var(--color-ink);
   border-radius: 999px;
   padding: .1rem .45rem;
 }
+.match-layout nav button > small { grid-column: 2 / -1; grid-row: 2; font-size: 0.7rem;}
+.match-avatar {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--color-accent-soft);
+  color: var(--color-secondary-strong);
+  font-weight: 700;
+}
+.match-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.match-avatar-list { width: 40px; height: 40px; }
+.match-avatar-header { width: 48px; height: 48px; }
 .chat {
   border: 1px solid var(--color-border);
   border-radius: 16px;
@@ -617,6 +642,10 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
 .chat-head { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 1rem; }
 .chat-head h3 { margin: 0; }
 .chat-head > div:first-child { min-width: 0; }
+.chat-head-person { display: flex; align-items: center; gap: .75rem; min-width: 0; }
+.chat-head-person > div { min-width: 0; }
+.chat-head-person h3 { overflow-wrap: anywhere; }
+.chat-head-person small { display: block; }
 .chat-head-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; }
 .chat-head-actions button { margin: 0; }
 .match-social-links { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .45rem; }

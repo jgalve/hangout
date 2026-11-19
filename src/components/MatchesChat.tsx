@@ -5,9 +5,17 @@ import {ProfileDialog} from './ProfileDialog'
 import {ReportDialog} from './ReportDialog'
 import type {ViewableProfile} from './ProfileDialog'
 
-type Match={id:string;other_user_id:string;other_first_name:string;shared_place_id:string|null;shared_place_name:string|null;unread_count:number}
+type Match={id:string;other_user_id:string;other_first_name:string;other_photo_url:string|null;shared_place_id:string|null;shared_place_name:string|null;unread_count:number}
 type MatchSocialLinks={facebook_url:string|null;instagram_url:string|null;tiktok_url:string|null}
 type Message={id:number;match_id:string;sender_id:string;body:string;created_at:string}
+
+function MatchAvatar({url,name,size}:{url:string|null;name:string;size:'list'|'header'}){
+  const [imageError,setImageError]=useState(false)
+  useEffect(()=>setImageError(false),[url])
+  return <span className={`match-avatar match-avatar-${size}`} aria-hidden="true">
+    {url&&!imageError?<img src={url} alt="" onError={()=>setImageError(true)}/>:name.trim().charAt(0).toUpperCase()}
+  </span>
+}
 
 const openingLineOptions=[
   'What do you like doing when you have a free afternoon?',
@@ -255,7 +263,8 @@ export function MatchesChat({user,refreshKey}:{user:User;refreshKey:number}){
       <nav aria-label="Matches"><ul>
         {matches.map(match=><li key={match.id}>
           <button className={active?.id===match.id?'selected':''} onClick={()=>selectMatch(match)}>
-            <span>{match.other_first_name}</span>
+            <MatchAvatar url={match.other_photo_url} name={match.other_first_name} size="list"/>
+            <span className="match-list-name">{match.other_first_name}</span>
             {Number(match.unread_count)>0&&<b>{match.unread_count}</b>}
             <small>{match.shared_place_name||'Shared place'}</small>
           </button>
@@ -263,8 +272,13 @@ export function MatchesChat({user,refreshKey}:{user:User;refreshKey:number}){
       </ul></nav>
       <div className="chat">{active?<><div className="chat-head">
         <div>
-          <h3>{active.other_first_name}</h3>
-          <small>{active.shared_place_name}</small>
+          <div className="chat-head-person">
+            <MatchAvatar url={active.other_photo_url} name={active.other_first_name} size="header"/>
+            <div>
+              <h3>{active.other_first_name}</h3>
+              <small>{active.shared_place_name}</small>
+            </div>
+          </div>
           {socialLinksLoading&&<small className="match-social-status" role="status">Loading social profiles…</small>}
           {socialLinksError&&<small className="match-social-error" role="alert">{socialLinksError}</small>}
           {socialLinks&&!socialLinksLoading&&!socialLinksError&&(()=>{

@@ -1,5 +1,6 @@
 import {FormEvent,useEffect,useState} from 'react'
 import type {User} from '@supabase/supabase-js'
+import {LogIn} from 'lucide-react'
 import {supabase} from '../lib/supabase'
 
 type AuthMode='signup'|'login'
@@ -160,10 +161,12 @@ export function Auth({initialMode='signup'}:{initialMode?:AuthMode}){
         <div className="oauth-buttons">
           <button type="button" className="secondary" onClick={()=>void signInWithProvider('google')} disabled={busy}>
             <span className="oauth-icon oauth-icon-google" aria-hidden="true">G</span>
+            <LogIn className="social-action-icon" size={18} aria-hidden="true"/>
             <span>{busyProvider==='google'?'Connecting to Google…':'Continue with Google'}</span>
           </button>
           <button type="button" className="secondary" onClick={()=>void signInWithProvider('facebook')} disabled={busy}>
             <span className="oauth-icon oauth-icon-facebook" aria-hidden="true">f</span>
+            <LogIn className="social-action-icon" size={18} aria-hidden="true"/>
             <span>{busyProvider==='facebook'?'Connecting to Facebook…':'Continue with Facebook'}</span>
           </button>
         </div>

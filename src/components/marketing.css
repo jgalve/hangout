@@ -27,7 +27,7 @@
 .marketing-skip:focus{left:1rem}
 .marketing-header{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--marketing-line);background:rgba(250,250,248,.96);backdrop-filter:blur(8px)}
 .marketing-bar{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
-.marketing-logo{display:inline-flex;align-items:center;padding:2px 4px;border-radius:8px;background:var(--marketing-surface);text-decoration:none}
+.marketing-logo{display:inline-flex;align-items:center;padding:2px 4px;border-radius:8px;background:none;text-decoration:none}
 .marketing-logo img{display:block;width:220px;max-width:100%;height:auto}
 .marketing-nav ul{display:flex;align-items:center;gap:.35rem;list-style:none;margin:0;padding:0}
 .marketing-nav a{display:inline-flex;align-items:center;min-height:44px;padding:.5rem .85rem;border-radius:999px;font-weight:600;text-decoration:none}
