@@ -90,7 +90,7 @@ export function MarketingHome(){
 
       <section className="marketing-cta" aria-labelledby="join-title">
         <div><p className="marketing-eyebrow">Your next hello starts here</p><h2 id="join-title">Find a little more common ground.</h2><p>Create an account and add the places you love.</p></div>
-        <a className="test marketing-button" href="#signup">Join HangOut</a>
+        <a className="marketing-button" href="#signup">Join HangOut</a>
       </section>
     </main>
 
