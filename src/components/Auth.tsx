@@ -152,7 +152,7 @@ export function Auth({initialMode='signup'}:{initialMode?:AuthMode}){
           <label>Email<input name="email" type="email" autoComplete="email" value={email} onChange={event=>setEmail(event.target.value)} required/></label>
           <label>Password<input name="password" type="password" minLength={8} autoComplete={mode==='signup'?'new-password':'current-password'} required/></label>
           {mode==='login'&&<button type="button" className="auth-link" onClick={()=>{setResetView('request');setMsg('')}} disabled={busy}>Forgot your password?</button>}
-          {mode==='signup'&&<label className="check"><input name="adult" type="checkbox"/> <span>I confirm I am at least 18 and accept the Terms, Privacy Policy and Community Guidelines.</span></label>}
+          {mode==='signup'&&<label className="check"><input name="adult" type="checkbox"/> <span>I confirm I am at least 18 and accept the Terms, <a href="/privacy-policy.html" target="_blank" rel="noreferrer">Privacy Policy</a> and Community Guidelines.</span></label>}
           <button className="primary" disabled={busy}>{busy&&!busyProvider?'Please wait…':mode==='signup'?'Create account':'Log in'}</button>
           <p className="status" role="status">{msg}</p>
         </form>

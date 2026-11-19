@@ -98,7 +98,7 @@ export function MarketingHome(){
       <div className="marketing-wrap marketing-footer-inner">
         <a className="marketing-logo" href="#home" aria-label="HangOut home"><img src="/hangout-logo.png" alt=""/></a>
         <p>Find people who share your interests and the places you love.</p>
-        <nav aria-label="Footer navigation"><a href="#how-it-works">How it works</a><a href="#safety">Safety</a><a href="#signup">Sign up</a><a href="#login">Log in</a></nav>
+        <nav aria-label="Footer navigation"><a href="#how-it-works">How it works</a><a href="#safety">Safety</a><a href="/privacy-policy.html">Privacy Policy</a><a href="#signup">Sign up</a><a href="#login">Log in</a></nav>
         <small>Closed beta. Features and availability may change.</small>
       </div>
     </footer>

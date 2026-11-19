@@ -15,14 +15,16 @@ Use this lightweight template per feature.
 - Developer notes: The local database tests have not run because Postgres at `127.0.0.1:54322` was unavailable and Docker/Podman was not installed. Nothing was applied to production. Prior checks found the hosted migration ledger empty despite schema markers for earlier migrations; do not run `supabase db push` until that history is reconciled.
 
 ### Google and Facebook OAuth configuration and validation
-- Status: App implementation complete; provider setup pending
+- Status: App implementation complete; provider setup and live credentials pending
 - Goal: Enable and verify social sign-up/login in Supabase Auth.
 - Acceptance criteria:
   - [ ] Create Google and Meta/Facebook OAuth apps and enable the providers in Supabase Auth.
   - [ ] Configure provider callback URLs and allowlist local and deployed app return URLs.
+  - [x] Add a public privacy policy page for Meta's Privacy Policy URL field.
   - [ ] Test successful login, cancellation/errors, new-account first-name and 18+ completion, and existing-account behavior.
 - Files: `src/components/Auth.tsx`, `src/App.tsx`, `README.md`
-- Developer notes: Provider credentials belong only in Supabase Auth settings, not client environment variables. Frontend build passed, but live OAuth was not tested because provider credentials and redirect configuration are not set.
+- Developer notes: Provider credentials belong only in Supabase Auth settings, not client environment variables.
+- QA results: `npm run build` passed. Live local checks against the configured Supabase project returned HTTP 400 for both Google and Facebook: `Unsupported provider: provider is not enabled`. Provider credentials and redirects could not be completed in this app session. The policy is available at `/privacy-policy.html`; the site must be deployed before entering its public URL in Meta.
 
 ### Discover match-success card animation
 - Status: Deferred per user
