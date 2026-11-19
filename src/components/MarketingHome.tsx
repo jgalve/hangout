@@ -61,7 +61,7 @@ export function MarketingHome(){
         <h2 id="steps-title">From favorite spot to a first hello.</h2>
         <ol className="marketing-steps">
           <li><span>1</span><div><h3>Create your account</h3><p>Sign up with your email and add a little about yourself.</p></div></li>
-          <li><span>2</span><div><h3>Pin your hangouts</h3><p>Choose up to five places you enjoy visiting.</p></div></li>
+          <li><span>2</span><div><h3>Pin your hangouts</h3><p>Choose up to 5 places you enjoy visiting.</p></div></li>
           <li><span>3</span><div><h3>Discover and connect</h3><p>Like people who share your places. When the interest is mutual, start a conversation.</p></div></li>
         </ol>
       </section>
