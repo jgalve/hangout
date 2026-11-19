@@ -59,7 +59,7 @@ h1 { font-size: clamp(2rem, 4vw, 2.25rem); }
 h2 { font-size: clamp(1.75rem, 4vw, 1.875rem); }
 h3 { font-size: 1.5rem; }
 .lede { font-size: 1.2rem; color: var(--color-muted); }
-.brand { display: inline-flex; align-items: center; padding: 2px 4px; border-radius: var(--radius-sm); background: var(--color-surface); }
+.brand { display: inline-flex; align-items: center; padding: 2px 4px; border-radius: var(--radius-sm); background: transparent; }
 .brand img { display: block; width: 210px; max-width: 100%; height: auto; }
 .bar .brand img { width: 180px; }
 .panel {
@@ -291,7 +291,7 @@ header { border-bottom: 1px solid var(--color-border); background: var(--color-s
 .app-nav button { display: inline-flex; align-items: center; gap: .45rem; min-height: 44px; padding: .55rem .8rem; border: 0; border-radius: 999px; background: transparent; color: var(--color-ink); white-space: nowrap; }
 .app-nav button.active { background: var(--color-primary-soft); color: var(--color-primary-dark); font-weight: 800; }
 .app-nav-icon { display: block; flex: 0 0 18px; width: 18px; height: 18px; }
-.app-nav-label { font-size: .88rem; }
+.app-nav-label { font-size: .88rem; font-weight: 700;}
 .discover-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
 .discover-heading { min-width: 0; }
 .discover-heading h2 { margin: 0; }

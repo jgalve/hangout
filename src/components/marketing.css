@@ -27,6 +27,7 @@
 .marketing-skip:focus{left:1rem}
 .marketing-header{position:sticky;top:0;z-index:20;border-bottom:1px solid var(--marketing-line);background:rgba(250,250,248,.96);backdrop-filter:blur(8px)}
 .marketing-bar{min-height:68px;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.marketing-header-brand{display:flex;align-items:center;gap:.65rem;min-width:0}
 .marketing-logo{display:inline-flex;align-items:center;padding:2px 4px;border-radius:8px;background:none;text-decoration:none}
 .marketing-logo img{display:block;width:220px;max-width:100%;height:auto}
 .marketing-nav ul{display:flex;align-items:center;gap:.35rem;list-style:none;margin:0;padding:0}
@@ -74,13 +75,16 @@
 .marketing-cta p:last-child{margin:0;color:var(--marketing-muted)}
 .marketing-footer{padding-block:2.5rem;background:var(--marketing-ink);color:var(--marketing-surface)}
 .marketing-footer-inner{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem 2rem;align-items:center}
+.marketing-footer-brand{display:flex;align-items:center;gap:.65rem;min-width:0}
 .marketing-footer .marketing-logo{background:transparent;color:var(--marketing-surface)}
+.marketing-beta{display:inline-flex;align-items:center;padding:.3rem .6rem;border-radius:999px;background:var(--marketing-primary);color:var(--marketing-ink);font-size:.72rem;font-weight:800;letter-spacing:.08em;line-height:1}
 .marketing-footer p{margin:0;color:var(--marketing-surface-alt)}
 .marketing-footer nav{display:flex;flex-wrap:wrap;gap:.5rem 1rem}
 .marketing-footer nav a{color:var(--marketing-surface);text-decoration-thickness:1px;text-underline-offset:3px}
 .marketing-footer small{color:var(--marketing-border-strong)}
 @media(max-width:820px){
   .marketing-logo img{width:clamp(160px,50vw,185px)}
+  .marketing-header-brand .marketing-logo img{width:clamp(120px,40vw,155px)}
   .marketing-menu-button{display:inline-flex;min-height:44px;align-items:center;padding:.45rem .9rem;border:1px solid var(--marketing-ink);border-radius:16px;background:transparent;color:var(--marketing-ink);font-weight:700}
   .marketing-nav ul{display:none;position:absolute;top:68px;left:0;right:0;align-items:stretch;padding:1rem;background:var(--marketing-paper);border-bottom:1px solid var(--marketing-line)}
   .marketing-nav ul.is-open{display:flex;flex-direction:column}

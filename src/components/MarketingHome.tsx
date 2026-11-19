@@ -10,9 +10,12 @@ export function MarketingHome(){
     <a className="marketing-skip" href="#marketing-main">Skip to content</a>
     <header className="marketing-header">
       <div className="marketing-wrap marketing-bar">
-        <a className="marketing-logo" href="#home" aria-label="HangOut home">
-          <img src="/hangout-logo.png" alt=""/>
-        </a>
+        <div className="marketing-header-brand">
+          <a className="marketing-logo" href="#home" aria-label="HangOut home">
+            <img src="/hangout-logo.png" alt=""/>
+          </a>
+          <span className="marketing-beta">BETA</span>
+        </div>
         <nav className="marketing-nav" aria-label="Main navigation">
           <button className="marketing-menu-button" type="button" aria-expanded={menuOpen} aria-controls="marketing-menu" onClick={()=>setMenuOpen(!menuOpen)}>Menu</button>
           <ul id="marketing-menu" className={menuOpen?'is-open':''}>
@@ -96,7 +99,10 @@ export function MarketingHome(){
 
     <footer className="marketing-footer">
       <div className="marketing-wrap marketing-footer-inner">
-        <a className="marketing-logo" href="#home" aria-label="HangOut home"><img src="/hangout-logo-white.png" alt=""/></a>
+        <div className="marketing-footer-brand">
+          <a className="marketing-logo" href="#home" aria-label="HangOut home"><img src="/hangout-logo-white.png" alt=""/></a>
+          <span className="marketing-beta">BETA</span>
+        </div>
         <p>Find people who share your interests and the places you love.</p>
         <nav aria-label="Footer navigation"><a href="#how-it-works">How it works</a><a href="#safety">Safety</a><a href="/privacy-policy.html">Privacy Policy</a><a href="/data-deletion.html">Data Deletion</a><a href="#signup">Sign up</a><a href="#login">Log in</a></nav>
         <small>Closed beta. Features and availability may change.</small>
