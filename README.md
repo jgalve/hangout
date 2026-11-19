@@ -380,7 +380,8 @@ To enable Google and Facebook sign-in:
 2. Enable Google and Facebook under Supabase Auth providers, and configure each provider with the callback URL shown by the Supabase project.
 3. Store the provider client credentials in Supabase Auth settings only. Do not commit them or expose them in browser environment variables.
 4. Set Meta's Privacy Policy URL to the deployed app origin plus `/privacy-policy.html`.
-5. Test both a new social account and an existing account. New social accounts must complete first-name and 18+ confirmation before using HangOut.
+5. Set Meta's Data Deletion Instructions URL to the deployed app origin plus `/data-deletion.html`.
+6. Test both a new social account and an existing account. New social accounts must complete first-name and 18+ confirmation before using HangOut.
 
 After another environment depends on a migration, add corrective migrations rather than editing previously applied migrations.
 
