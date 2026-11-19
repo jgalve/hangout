@@ -385,6 +385,19 @@ To enable Google and Facebook sign-in:
 
 After another environment depends on a migration, add corrective migrations rather than editing previously applied migrations.
 
+### Cloudflare Pages deployment
+
+For the Vite frontend hosted on Cloudflare Pages:
+
+- Set the build command to `npm run build` and the build output directory to `dist`.
+- Set `VITE_SUPABASE_URL` to the Supabase project URL and `VITE_SUPABASE_PUBLISHABLE_KEY` to its publishable (or legacy anon) key in Cloudflare's Production and Preview build variables as needed. Vite embeds `VITE_*` values into the public frontend at build time; redeploy after changing them.
+- Never add a Supabase service-role key, database password, or OAuth client secret to `VITE_*` variables or the browser bundle.
+- In Supabase **Authentication → URL Configuration**, set the Site URL to `https://your-domain` and allowlist `https://your-domain/?authMode=signup` and `https://your-domain/?authMode=login`. Add any actual `www` or Cloudflare preview origins used by the app.
+- For Google and Facebook login, configure the OAuth app's callback URL using the callback displayed in Supabase Auth provider settings (commonly `https://<project-ref>.supabase.co/auth/v1/callback`). This provider callback is separate from the app return URLs allowlisted in Supabase.
+- Set Meta's Privacy Policy URL to `https://your-domain/privacy-policy.html` and Data Deletion Instructions URL to `https://your-domain/data-deletion.html`.
+
+Cloudflare serves the frontend; the browser connects directly to Supabase using the public publishable key, with access controlled by Supabase Auth and database policies. No service-role key or separate Cloudflare-to-Supabase proxy is needed for this app.
+
 # Code map
 
 | File | Responsibility |
